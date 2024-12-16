@@ -4,82 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emoji to PNG</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="emojiCanvas" width="400" height="400"></canvas>
+    <div>
+        <canvas id="emojiCanvas" width="300" height="300"></canvas>
+    </div>
+
+    <input type="text" id="emojiInput" placeholder="Enter emoji and press Enter" maxlength="2">
 
     <!-- Resolution selection buttons -->
-    <button id="download1k">Download 1K (400x400)</button>
-    <button id="download2k">Download 2K (800x800)</button>
-    <button id="download4k">Download 4K (1600x1600)</button>
+    <div>
+        <button id="download1k">Download 1K (800x800)</button>
+        <button id="download2k">Download 2K (1600x1600)</button>
+        <button id="download4k">Download 4K (3200x3200)</button>
+    </div>
 
     <script>
         const canvas = document.getElementById("emojiCanvas");
         const ctx = canvas.getContext("2d");
 
-        // Function to draw emoji
+        let emoji = "😊";
+
+        // Function to draw emoji in a circular shape
         function drawEmoji(scaleFactor) {
             // Clear previous content
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Set font and apply scaling
-            ctx.scale(scaleFactor, scaleFactor);  // Apply scale factor
-            ctx.font = "100px Arial";
-            ctx.fillText("😊", 50, 100);
+            // Draw a circular clipping region
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+            ctx.clip();
+
+            // Reset scaling before drawing
+            ctx.scale(1, 1); // Reset scaling to avoid cumulative scaling effects
+            ctx.font = `${200 / scaleFactor}px Arial`; // Adjust font size based on scale factor
+
+            // Calculate text width and height
+            const textWidth = ctx.measureText(emoji).width;
+            const textHeight = 200; // Set font size to 200px
+
+            // Calculate the position to center the text
+            const x = (canvas.width - textWidth) / 2; // Center horizontally
+            const y = (canvas.height + textHeight / 2) / 2; // Center vertically
+
+            ctx.fillText(emoji, x, y);
+        }
+
+        function downloadImage(scaleFactor, filename) {
+            // Set canvas actual resolution
+            canvas.width = 800 * scaleFactor;
+            canvas.height = 800 * scaleFactor;
+            canvas.style.width = '800px';
+            canvas.style.height = '800px';
+            ctx.scale(1, 1); // Reset scaling
+            drawEmoji(scaleFactor);
+
+            const dataUrl = canvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = filename;
+            a.click();
         }
 
         // 1K resolution download button
         document.getElementById("download1k").addEventListener("click", function() {
-            const scaleFactor = 1;  // 1K resolution
-            // Set canvas actual resolution
-            canvas.width = 400 * scaleFactor;
-            canvas.height = 400 * scaleFactor;
-            canvas.style.width = '400px';
-            canvas.style.height = '400px';
-            ctx.scale(1, 1); // Reset scaling
-            drawEmoji(1);
-
-            const dataUrl = canvas.toDataURL("image/png");
-            const a = document.createElement("a");
-            a.href = dataUrl;
-            a.download = "emoji_1k.png";
-            a.click();
+            downloadImage(1, "emoji_1k.png");
         });
 
         // 2K resolution download button
         document.getElementById("download2k").addEventListener("click", function() {
-            const scaleFactor = 2;  // 2K resolution
-            // Set canvas actual resolution
-            canvas.width = 400 * scaleFactor;
-            canvas.height = 400 * scaleFactor;
-            canvas.style.width = '400px';
-            canvas.style.height = '400px';
-            ctx.scale(1, 1); // Reset scaling
-            drawEmoji(2);
-
-            const dataUrl = canvas.toDataURL("image/png");
-            const a = document.createElement("a");
-            a.href = dataUrl;
-            a.download = "emoji_2k.png";
-            a.click();
+            downloadImage(2, "emoji_2k.png");
         });
 
         // 4K resolution download button
         document.getElementById("download4k").addEventListener("click", function() {
-            const scaleFactor = 4;  // 4K resolution
-            // Set canvas actual resolution
-            canvas.width = 400 * scaleFactor;
-            canvas.height = 400 * scaleFactor;
-            canvas.style.width = '400px';
-            canvas.style.height = '400px';
-            ctx.scale(1, 1); // Reset scaling
-            drawEmoji(4);
+            downloadImage(4, "emoji_4k.png");
+        });
 
-            const dataUrl = canvas.toDataURL("image/png");
-            const a = document.createElement("a");
-            a.href = dataUrl;
-            a.download = "emoji_4k.png";
-            a.click();
+        document.getElementById("emojiInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                emoji = this.value;
+                drawEmoji(1);
+            }
         });
     </script>
 </body>
