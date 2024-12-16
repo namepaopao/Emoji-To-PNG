@@ -36,13 +36,6 @@ Supports all modern browsers, including:
 -   Safari
 -   Edge
 
-## Future Plans
-
--   [ ] Add custom emoji input functionality
--   [ ] Support background color adjustment
--   [ ] Add more image format support
--   [ ] Support custom image dimensions
-
 ## License
 
 MIT License
