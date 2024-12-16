@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji to PNG</title>
+</head>
+<body>
+    <canvas id="emojiCanvas" width="400" height="400"></canvas>
+
+    <!-- 分辨率选择按钮 -->
+    <button id="download1k">Download 1K (400x400)</button>
+    <button id="download2k">Download 2K (800x800)</button>
+    <button id="download4k">Download 4K (1600x1600)</button>
+
+    <script>
+        const canvas = document.getElementById("emojiCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // 绘制 emoji 的函数
+        function drawEmoji(scaleFactor) {
+            // 清除之前的内容
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 设置字体和颜色
+            ctx.scale(scaleFactor, scaleFactor);  // 进行缩放
+            ctx.font = "100px Arial";
+            ctx.fillText("😊", 50, 100);
+        }
+
+        // 1K 分辨率下载按钮
+        document.getElementById("download1k").addEventListener("click", function() {
+            const scaleFactor = 1;  // 1K 分辨率
+            // 设置 canvas 的实际分辨率
+            canvas.width = 400 * scaleFactor;
+            canvas.height = 400 * scaleFactor;
+            canvas.style.width = '400px';
+            canvas.style.height = '400px';
+            ctx.scale(1, 1); // 重置缩放
+            drawEmoji(1);
+
+            const dataUrl = canvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = "emoji_1k.png";
+            a.click();
+        });
+
+        // 2K 分辨率下载按钮
+        document.getElementById("download2k").addEventListener("click", function() {
+            const scaleFactor = 2;  // 2K 分辨率
+            // 设置 canvas 的实际分辨率
+            canvas.width = 400 * scaleFactor;
+            canvas.height = 400 * scaleFactor;
+            canvas.style.width = '400px';
+            canvas.style.height = '400px';
+            ctx.scale(1, 1); // 重置缩放
+            drawEmoji(2);
+
+            const dataUrl = canvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = "emoji_2k.png";
+            a.click();
+        });
+
+        // 4K 分辨率下载按钮
+        document.getElementById("download4k").addEventListener("click", function() {
+            const scaleFactor = 4;  // 4K 分辨率
+            // 设置 canvas 的实际分辨率
+            canvas.width = 400 * scaleFactor;
+            canvas.height = 400 * scaleFactor;
+            canvas.style.width = '400px';
+            canvas.style.height = '400px';
+            ctx.scale(1, 1); // 重置缩放
+            drawEmoji(4);
+
+            const dataUrl = canvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = "emoji_4k.png";
+            a.click();
+        });
+    </script>
+</body>
+</html>
